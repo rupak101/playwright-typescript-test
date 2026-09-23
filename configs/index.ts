@@ -28,7 +28,7 @@ function requireEnv(name: string): string {
 // Read lazily so commands that never log in (lint, --list) don't need a .env.
 export function getCredentials() {
   return {
-    username: requireEnv('RSA_USERNAME'),
-    password: requireEnv('RSA_PASSWORD'),
+    username: requireEnv('TEST_USERNAME'),
+    password: requireEnv('TEST_PASSWORD'),
   };
 }

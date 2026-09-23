@@ -12,7 +12,7 @@ Playwright + TypeScript UI automation for https://rahulshettyacademy.com, built 
 ## Architecture
 
 ```
-configs/index.ts          TEST_ENV → configs/<env>.ts (baseUrl); getCredentials() reads RSA_USERNAME/RSA_PASSWORD from .env
+configs/index.ts          TEST_ENV → configs/<env>.ts (baseUrl); getCredentials() reads TEST_USERNAME/TEST_PASSWORD from .env
 playwright.config.ts      testDir tests/, baseURL from config, reporters (list, html, allure, FailureReporter), output in reports/
 support/
   pages/BasePage.ts       abstract parent: navigate (relative to baseURL), click, type, check, waitForUrl

@@ -22,8 +22,8 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          RSA_USERNAME: ${{ secrets.RSA_USERNAME }}
-          RSA_PASSWORD: ${{ secrets.RSA_PASSWORD }}
+          TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+          TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
       - name: Build Allure report
         if: always()
         run: npm run allure:generate

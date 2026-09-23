@@ -8,7 +8,7 @@ type Labels = {
 
 // Playwright `tag`s become Allure tags automatically; this adds the report hierarchy.
 export async function allureLabels({ feature, story, severity = allure.Severity.NORMAL }: Labels) {
-  await allure.epic('Rahul Shetty Academy');
+  await allure.epic('Playwright UI Automation');
   await allure.feature(feature);
   await allure.story(story);
   await allure.severity(severity);

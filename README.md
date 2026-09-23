@@ -1,4 +1,4 @@
-# Rahul Shetty Academy – Playwright UI Automation
+# Playwright UI Automation
 
 UI tests for [rahulshettyacademy.com](https://rahulshettyacademy.com), written in **Playwright + TypeScript** using the Page Object Model.
 
@@ -44,7 +44,7 @@ Requires Node.js 18+ and Java 8+ (Java is only needed to build the Allure report
 ```bash
 npm install
 npx playwright install chromium
-cp .env.example .env          # add RSA_USERNAME and RSA_PASSWORD
+cp .env.example .env          # add TEST_USERNAME and TEST_PASSWORD
 ```
 
 ## How to run
@@ -116,6 +116,6 @@ only needs a config update.
 ## Docker
 
 ```bash
-docker build -t rsa-tests .
-docker run --rm --env-file .env -v "$PWD/reports:/app/reports" rsa-tests
+docker build -t playwright-tests .
+docker run --rm --env-file .env -v "$PWD/reports:/app/reports" playwright-tests
 ```
