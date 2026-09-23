@@ -1,5 +1,12 @@
 node_modules/
-reports/
 .env
 scratch/
 .claude/settings.local.json
+
+# Test reports and artifacts
+reports/
+playwright-report/
+test-results/
+blob-report/
+allure-results/
+allure-report/
