@@ -11,13 +11,12 @@ configs/index.ts          TEST_ENV → configs/<env>.ts (baseUrl); getCredential
 playwright.config.ts      testDir tests/, baseURL from config, reporters (list, html, allure, FailureReporter), output in reports/
 support/
   pages/BasePage.ts       abstract parent: navigate (relative to baseURL), click, type, check, waitForUrl
-  pages/PageFactory.ts    getPage(PageClass): creates and caches one instance per test
+  pages/PageFactory.ts    getPage(PageClass): creates and caches one instance per test, for any class extending BasePage
   pages/*Page.ts          static PATH, readonly locators, user-level actions
-  fixtures/test.ts        test.extend: page override (failure diagnostics), pageFactory, one fixture per page
+  fixtures/test.ts        testPages = baseTest.extend: page override (failure diagnostics), pageFactory, one fixture per page
   data/testData.ts        test inputs: PRODUCTS, INVALID_LOGIN_CASES
   constants/messages.ts   UI text asserted on: LOGIN_ERRORS
   helpers/allure.ts       allureLabels(), attachScreenshot()
-  helpers/diagnostics.ts  collects failed site requests and console errors; attached only when a test fails
   reporters/FailureReporter.ts   reports/failure.json: failures grouped by first error line, with rerun commands
   scripts/run.ts          maps chromium|firefox|webkit|all to Playwright projects
 tests/
@@ -42,14 +41,15 @@ tests/
 - Every page extends `BasePage` and has a `static readonly PATH`, relative to `baseURL`. Never hard-code full URLs; assertions use `config.baseUrl`.
 - Locators are `readonly` fields set in the constructor, taken from the live page. Prefer `id`, then role or `data-*`, then text filters, then CSS class. Avoid absolute XPath, unexplained `nth()` and Angular `_ngcontent-*` attributes.
 - Methods describe user actions (`login`, `waitForShopPage`). **They never assert.** ESLint blocks `expect` in `support/pages/`.
-- Every page is registered as a fixture in `support/fixtures/test.ts`. Specs receive it as a parameter (`{ loginPage, shopPage }`); `PageFactory` creates it once per test. Never create page objects with `new` in a spec.
+- Every page is registered as a fixture in `support/fixtures/test.ts`, created through `pageFactory.getPage(<Name>Page)`. Specs receive it as a parameter (`{ loginPage, shopPage }`) and never call `pageFactory` or `new` themselves.
 
 ## Writing a test
 
 If the test needs a new page:
 
 1. Create `support/pages/<Name>Page.ts` as described above.
-2. Register it in `support/fixtures/test.ts`: import it, add it to the `Pages` type, and add a fixture that returns `pageFactory.getPage(<Name>Page)`.
+2. Register it in `support/fixtures/test.ts`: import it, add it to the `Pages` type, and add a fixture:
+   `<name>Page: async ({ pageFactory }, use) => { await use(pageFactory.getPage(<Name>Page)); }`.
 3. Use it in a spec as a fixture parameter. If step 2 is missed, `npm run typecheck` fails.
 
 Then add the spec as `tests/<domain>/<name>.spec.ts`:
@@ -65,6 +65,7 @@ test.describe('Shop catalogue', { tag: ['@shop', '@regression'] }, () => {
 ```
 
 - Import `test`/`expect` from `@/support/fixtures/test`, never from `@playwright/test`.
+- Take page objects as fixture parameters (`{ loginPage, shopPage }`).
 - Keep assertions in specs, using web-first assertions (`toBeVisible`, `toHaveText`, `toHaveURL`) and real waits (`waitForURL`, `locator.waitFor`).
 - **No conditionals in tests.** Split them into separate tests or table rows.
 - For data variations, loop over a table in `support/data/` (expected text in `support/constants/`) instead of copying test blocks.
@@ -91,8 +92,7 @@ npm test -- -g "@login.*@negative"
 The `page` fixture in `support/fixtures/test.ts` wraps Playwright's built-in page. While a test runs, it records
 requests to the site that failed or returned 4xx/5xx, plus browser console errors and uncaught page exceptions.
 If the test fails, both lists are attached to the Playwright and Allure reports next to the screenshot, video and
-trace. Nothing is attached for passing tests, and requests to other domains (analytics, ads) are ignored. The logic
-lives in `support/helpers/diagnostics.ts`.
+trace. Nothing is attached for passing tests, and requests to other domains (analytics, ads) are ignored.
 
 ## Quality checks
 
