@@ -1,0 +1,35 @@
+name: Playwright tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run check
+      - run: npx playwright install --with-deps chromium
+      - name: Run tests
+        run: npm test
+        env:
+          RSA_USERNAME: ${{ secrets.RSA_USERNAME }}
+          RSA_PASSWORD: ${{ secrets.RSA_PASSWORD }}
+      - name: Build Allure report
+        if: always()
+        run: npm run allure:generate
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: reports
+          path: reports/
+          retention-days: 14

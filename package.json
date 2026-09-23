@@ -1,0 +1,60 @@
+{
+  "name": "rahulshettyacademy-playwright",
+  "version": "1.0.0",
+  "scripts": {
+    "prepare": "husky || true",
+    "test": "tsx support/scripts/run.ts chromium",
+    "test:headed": "tsx support/scripts/run.ts chromium --headed",
+    "test:firefox": "tsx support/scripts/run.ts firefox",
+    "test:webkit": "tsx support/scripts/run.ts webkit",
+    "test:all-browsers": "tsx support/scripts/run.ts all",
+    "test:smoke": "tsx support/scripts/run.ts chromium --grep @smoke",
+    "test:allure": "npm run clean:reports; npm test; npm run allure:generate",
+    "clean:reports": "rm -rf reports/*",
+    "report:html": "playwright show-report reports/playwright-report",
+    "allure:generate": "allure generate reports/allure-results --clean -o reports/allure-report",
+    "allure:open": "allure open reports/allure-report",
+    "allure:serve": "allure serve reports/allure-results",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "lint:check": "eslint . --max-warnings 0",
+    "lint:fix": "eslint . --fix",
+    "typecheck": "tsc --noEmit",
+    "check": "npm run format:check && npm run lint:check && npm run typecheck"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "Playwright + TypeScript UI tests for rahulshettyacademy.com",
+  "devDependencies": {
+    "@eslint/js": "^9.39.5",
+    "@playwright/test": "^1.63.0",
+    "@types/node": "^22.20.4",
+    "allure-commandline": "^2.46.1",
+    "allure-playwright": "^3.12.2",
+    "cross-env": "^10.1.0",
+    "dotenv": "^18.0.3",
+    "eslint": "^9.39.5",
+    "eslint-config-prettier": "^10.1.8",
+    "eslint-plugin-playwright": "^2.12.0",
+    "globals": "^17.12.0",
+    "husky": "^9.1.7",
+    "lint-staged": "^17.5.1",
+    "prettier": "^3.9.9",
+    "tsx": "^4.23.15",
+    "typescript": "~5.9",
+    "typescript-eslint": "^8.70.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=18"
+  },
+  "lint-staged": {
+    "*.{ts,mts,mjs,js,json,md,yml}": [
+      "prettier --write"
+    ],
+    "*.{ts,mts,mjs}": [
+      "eslint --no-warn-ignored"
+    ]
+  }
+}
