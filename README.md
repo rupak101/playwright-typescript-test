@@ -22,7 +22,7 @@ For how the framework is built, its rules, and how to add a test, see [FRAMEWORK
 
 ## Setup
 
-Requires Node.js 22 (see `.nvmrc`) and Java 8+ (Java is only needed to build the Allure report).
+Requires Node.js 22.22.1 or newer (`.nvmrc` pins major version 22) and Java 8+ (Java is only needed to build the Allure report).
 
 ```bash
 npm install
